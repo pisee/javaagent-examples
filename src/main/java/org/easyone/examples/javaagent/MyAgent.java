@@ -1,0 +1,18 @@
+package org.easyone.examples.javaagent;
+
+import java.lang.instrument.Instrumentation;
+
+public class MyAgent {
+
+	public static void premain(String agentArgs, Instrumentation inst) {
+		System.out.println("start premain");
+		inst.addTransformer(new MyTransformer());
+		System.out.println("end premain");
+	}
+	
+	public static void agentmain(String agentArgs, Instrumentation inst) {
+		System.out.println("start agentmain");
+		inst.addTransformer(new MyTransformer());
+		System.out.println("start agentmain");
+	}
+}

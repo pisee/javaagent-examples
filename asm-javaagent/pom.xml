@@ -4,31 +4,36 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.easyone.examples</groupId>
-	<artifactId>javaagent</artifactId>
+	<artifactId>asm-javaagent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>javaagent-excamples</name>
+	<name>asm-javaagent-excamples</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<javaassist.version>3.21.0-GA</javaassist.version>
+		<asm.version>8.0.1</asm.version>
+		<junit.version>4.12</junit.version>
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>${javaassist.version}</version>
-		</dependency>
-
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>${asm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-commons</artifactId>
+            <version>${asm.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -51,17 +56,17 @@
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<!-- <mainClass>org.easyone.agent.ExecutableMain</mainClass> -->
 									<manifestEntries>
-										<Premain-Class>org.easyone.examples.javaagent.MyAgent</Premain-Class>
+										<Premain-Class>org.easyone.examples.javaagent.asm.MyAgent</Premain-Class>
 										<Can-Redefine-Classes>true</Can-Redefine-Classes>
 										<Can-Retransform-Classes>true</Can-Retransform-Classes>
-										<Agent-Class>org.easyone.examples.javaagent.MyAgent</Agent-Class>
+										<Agent-Class>org.easyone.examples.javaagent.asm.MyAgent</Agent-Class>
 									</manifestEntries>
 								</transformer>
 							</transformers>
 							<relocations>
 								<relocation>
-									<pattern>javassist</pattern>
-									<shadedPattern>org.easyone.examples.javaagent.library.javassist</shadedPattern>
+									<pattern>org.objectweb.asm</pattern>
+									<shadedPattern>org.easyone.examples.javaagent.asm.library.org.objectweb.asm</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>
@@ -100,10 +105,10 @@
 							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 						</manifest>
 						<manifestEntries>
-							<Premain-Class>org.easyone.examples.javaagent.MyAgent</Premain-Class>
+							<Premain-Class>org.easyone.examples.javaagent.asm.MyAgent</Premain-Class>
 							<Can-Redefine-Classes>true</Can-Redefine-Classes>
 							<Can-Retransform-Classes>true</Can-Retransform-Classes>
-							<Agent-Class>org.easyone.examples.javaagent.MyAgent</Agent-Class>
+							<Agent-Class>org.easyone.examples.javaagent.asm.MyAgent</Agent-Class>
 						</manifestEntries>
 					</archive>
 					<!-- <archive> <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile> 
@@ -129,10 +134,10 @@
 									<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 								</manifest>
 								<manifestEntries>
-									<Premain-Class>org.easyone.examples.javaagent.MyAgent</Premain-Class>
+									<Premain-Class>org.easyone.examples.javaagent.asm.MyAgent</Premain-Class>
 									<Can-Redefine-Classes>true</Can-Redefine-Classes>
 									<Can-Retransform-Classes>true</Can-Retransform-Classes>
-									<Agent-Class>org.easyone.examples.javaagent.MyAgent</Agent-Class>
+									<Agent-Class>org.easyone.examples.javaagent.asm.MyAgent</Agent-Class>
 								</manifestEntries>
 							</archive>
 							<descriptorRefs>

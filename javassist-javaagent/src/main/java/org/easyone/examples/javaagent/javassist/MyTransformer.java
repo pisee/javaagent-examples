@@ -1,4 +1,4 @@
-package org.easyone.examples.javaagent;
+package org.easyone.examples.javaagent.javassist;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
@@ -14,7 +14,9 @@ import javassist.LoaderClassPath;
 
 public class MyTransformer implements ClassFileTransformer {
 
-	Set<ClassLoader> classloaders = new HashSet<>();
+	private static final String SERVLET_METHOD = "service";
+	private static final String JAVAX_SERVLET_HTTP_HTTP_SERVLET = "javax.servlet.http.HttpServlet";
+	Set<ClassLoader> classLoaders = new HashSet<>();
 	Set<String> classNames = new HashSet<String>();
 	
 	ClassPool classPool = ClassPool.getDefault();
@@ -25,8 +27,8 @@ public class MyTransformer implements ClassFileTransformer {
 		
 		byte[] byteCode = classfileBuffer;
 		
-		if(!classloaders.contains(loader)) {
-			classloaders.add(loader);
+		if(!classLoaders.contains(loader)) {
+			classLoaders.add(loader);
 			classPool.appendClassPath(new LoaderClassPath(loader));
 		}
 		
@@ -38,16 +40,16 @@ public class MyTransformer implements ClassFileTransformer {
 		}
 		
 		try {
-			if("javax.servlet.http.HttpServlet".equalsIgnoreCase(normalizeClassNames)) {
+			if(JAVAX_SERVLET_HTTP_HTTP_SERVLET.equalsIgnoreCase(normalizeClassNames)) {
 				System.out.println("captured javax.servlet.http.HttpServlet");
-                CtClass ctClass = classPool.get("javax.servlet.http.HttpServlet");
+                CtClass ctClass = classPool.get(JAVAX_SERVLET_HTTP_HTTP_SERVLET);
                 CtMethod[] declaredMethods = ctClass.getDeclaredMethods();
                 System.out.println(Arrays.toString(declaredMethods));
                 
                 for(CtMethod ctMethod: declaredMethods) {
                 	String methodName = ctMethod.getName();
                 	String methodSignature = ctMethod.getSignature();
-                	if("service".equals(methodName)) {
+                	if(SERVLET_METHOD.equals(methodName)) {
                 		if("(Ljavax/servlet/http/HttpServletRequest;Ljavax/servlet/http/HttpServletResponse;)V".equals(methodSignature)) {
                 			ctMethod.addLocalVariable("startTime", CtClass.longType);
                 			ctMethod.insertBefore("startTime = System.currentTimeMillis();");
@@ -67,12 +69,15 @@ public class MyTransformer implements ClassFileTransformer {
                 }
                 byteCode = ctClass.toBytecode();
                 ctClass.detach();
-			}else if("org.springframework.web.servlet.DispatcherServlet".equalsIgnoreCase(normalizeClassNames)) {
+			}
+/*
+ 			else if("org.springframework.web.servlet.DispatcherServlet".equalsIgnoreCase(normalizeClassNames)) {
 				System.out.println("captured org.springframework.web.servlet.DispatcherServlet");
 	            CtClass ctClass = classPool.get("org.springframework.web.servlet.DispatcherServlet");
 	            CtMethod[] declaredMethods = ctClass.getDeclaredMethods();
 	            System.out.println(Arrays.toString(declaredMethods));
 			}
+*/
 		}catch (Exception e) {
 			System.out.println("Exception:" + e);
 		}

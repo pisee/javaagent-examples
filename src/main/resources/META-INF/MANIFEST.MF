@@ -1,4 +1,0 @@
-Agent-Class: org.easyone.examples.javaagent.MyAgent
-Can-Redefine-Classes: true
-Can-Retransform-Classes: true
-Premain-Class: org.easyone.examples.javaagent.MyAgent
